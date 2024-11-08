@@ -5,21 +5,47 @@
     <title>RAG</title>
     <link rel="stylesheet" href="https://unpkg.com/reveal.js/dist/reveal.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="dist/font">
     <style>
-        /* Set font and layout adjustments */
-        body, .reveal p, .reveal ul, .reveal li, .reveal div, .reveal span {
-            font-size: 1em;
-            line-height: 1.0em;
+        @font-face {
+            font-family: 'GT Walsheim Pro';
+            src: url('font/GT-Walsheim-Light.woff2') format('woff2'),
+            url('font/GT-Walsheim-Light.woff') format('woff'),
+            url('font/GT-Walsheim-Light.ttf') format('truetype'),
+            url('font/GT-Walsheim-Light.eot') format('embedded-opentype');
+            font-weight: 300;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'GT Walsheim Pro';
+            src: url('font/GT-Walsheim-Bold.woff2') format('woff2'),
+            url('font/GT-Walsheim-Bold.woff') format('woff'),
+            url('font/GT-Walsheim-Bold.ttf') format('truetype'),
+            url('font/GT-Walsheim-Bold.eot') format('embedded-opentype');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'GT Walsheim Pro';
+            src: url('font/GT-Walsheim-Bold-Oblique.woff2') format('woff2'),
+            url('font/GT-Walsheim-Bold-Oblique.woff') format('woff'),
+            url('font/GT-Walsheim-Bold-Oblique.ttf') format('truetype');
+            font-weight: 700;
+            font-style: oblique;
+        }
+        body, .reveal p, .reveal ul, .reveal li, .reveal div, .reveal span, .reveal h3 .reveal h1 .reveal div {
+            font-family: 'GT Walsheim Pro', sans-serif !important;
         }
         h3 {
             font-size: 1.5em;
         }
 
-        /* Force the slides to take 80% of the width */
         .reveal .slides {
-            width: 65% !important; /* Force width to 80% */
-            height: auto; /* Adjust height accordingly */
-            transform: translate(-50%, -50%) scale(1); /* Center and scale normally */
+            width: 64% !important;
+            height: auto;
+            transform: translate(-50%, -50%) scale(1);
         }
     </style>
 </head>
@@ -35,11 +61,6 @@
 
             <h1 class="t-yellow">RAG</h1>
             <h3 class="t-gray">Retrieval-Augmented Generation</h3>
-
-            <aside class="notes">
-                Caute, vitam vas na tejto prezentacii, na ktorej sa budem venovat tematike RAGu, teda retrieval augmented generation.
-                Povieme si o pred spracovani dat, nejakych jednoduchych workflowoch, moznych vylepseniach a nejakych limitaciach respektvice na co si treba davat pozor.
-            </aside>
         </section>
 
 
@@ -53,18 +74,6 @@
                 <li><strong>Token:</strong> základná jednotka textu spracovaná modelom</li>
                 <li><strong>LLM Context Window:</strong> maximálny počet tokenov, ktoré vie model držať v svojej pamäti </li>
             </ul>
-            <aside class="notes">
-                <ul>
-                    <li>Predtým než sa pustíme do podrobnejšieho vysvetľovania technológie RAG, rád by som vám predstavil niekoľko pojmov, s ktorými sa budeme počas prezentácie často stretávať.</li>
-                    <li>    1. Chunk: Je menšia časť textu, ktorá vznikla jeho rozdelením za pomoci regexu alebo inej techniky. Služí na ľahšie vyhľadávanie relevantných dát.</li>
-                    <li>   2. Query/User Prompt: Otázka či požiadavka, ktorú zadáva používateľ systému. Na základe query systém vyhľadá relevantné informácie a pripraví odpoveď.</li>
-                    <li>   3. System Prompt: Inštrukcia zadaná systému alebo modelu, ktorá upravuje, ako má model interpretovať query a generovať odpoveď. System prompt sa používa na nastavenie spôsobu, akým model odpovedá.</li>
-                    <li>    4. Embedding: Embedding je numerická reprezentácia chunka, ktorá umožňuje porovnávať sémantickú podobnosť medzi textami. Týmto spôsobom vieme vyhľadávať obsah na základe jeho významovej blízkosti.</li>
-                    <li>    5. Token: Token je základná jednotka textu, ktorú model spracováva – môže predstavovať jedno slovo, časť slova alebo znak. Veľkosť modelu v tokens určuje, koľko textu dokáže model spracovať naraz.</li>
-                    <li>   6. LLM Context Window: Kontextové okno LLM je maximálny počet tokenov, ktoré model dokáže spracovať súčasne. Tento limit určuje, koľko informácií je možné odoslať do modelu naraz, čo ovplyvňuje rozsah, ktorý model môže brať do úvahy pri generovaní odpovedí.</li>
-                </ul>
-
-            </aside>
         </section>
 
         <section>
@@ -74,19 +83,6 @@
                 <li>Používa tieto informácie ako kontext pre generatívne modely</li>
                 <li>Generuje odpovede na základe aktuálne dostupného kontextu a otázky používateľa</li>
             </ul>
-            <aside class="notes">
-                <ul>
-                    <li>RAG je technológia kombinujúca vyhľadávanie informácií s generatívnymi schopnosťami modelov.</li>
-                    <li>Pracuje nasledovne:
-                        <ul>
-                            <li>Retrieval krok hľadá najrelevantnejšie časti z dátových zdrojov.</li>
-                            <li>Chunky (menšie segmenty textu) sú prevedené na vektorové reprezentácie a uložené.</li>
-                            <li>Model využíva aktuálny kontext pre presné odpovede.</li>
-                        </ul>
-                    </li>
-                    <li>RAG sa odlišuje od tradičných modelov tým, že kombinuje historické a aktuálne dáta.</li>
-                </ul>
-            </aside>
         </section>
 
 
@@ -114,49 +110,12 @@
                     </ul>
                 </li>
             </ul>
-            <aside class="notes">
-                <ul>
-                    <li>Pred implementáciou RAG systému potrebujeme pripraviť dáta:</li>
-                    <li>1. Extrakcia textu:
-                        <ul>
-                            <li>Unstructured/PyMuPDF: extrakcia textu a obrázkov.</li>
-                            <li>Camelot: extrakcia údajov z tabuliek.</li>
-                        </ul>
-                    </li>
-                    <li>2. Rozdelenie na chunky:
-                        <ul>
-                            <li>Regex - podľa bodiek, odsekov.</li>
-                            <li>Sémantické delenie - podľa významu pomocou LangChain.</li>
-                        </ul>
-                    </li>
-                    <li>3. Embedding a uloženie:
-                        <ul>
-                            <li>Použitie embedding modelu na vektorovú reprezentáciu.</li>
-                            <li>Uloženie do databáz ako PGVector, Chroma, Pinecone pre rýchle vyhľadávanie.</li>
-                        </ul>
-                    </li>
-                </ul>
-            </aside>
-
-
         </section>
 
 
         <section>
             <h3 class="t-yellow">Jednoduchý workflow RAG</h3>
             <img src="dist/naive-300.png" alt="Jednoduchý RAG workflow" style="max-width: 100%; height: auto;">
-            <aside class="notes">
-                <ul>
-                    <li>Jednoduchý RAG flow:
-                        <ul>
-                            <li>Používateľ zadá query.</li>
-                            <li>Query sa prevedie do vektorovej podoby pomocou embedding modelu.</li>
-                            <li>Vyhľadáme podobné chunky v databáze a pošleme ich s query do LLM.</li>
-                            <li>LLM odpovedá na základe poskytnutých chunkov.</li>
-                        </ul>
-                    </li>
-                </ul>
-            </aside>
         </section>
 
         <section>
@@ -230,9 +189,6 @@
         <section>
             <h3 class="t-yellow">Komplexnejší workflow RAG</h3>
             <img src="dist/advanced-300.png" alt="Komplexný RAG workflow" style="max-width: 100%; height: auto;">
-            <aside class="notes">
-                Na tomto slajde máme zobrazený pokročilejší workflow RAG systému, ktorý obsahuje niekoľko doplňujúcich procesov pre efektívnejšie vyhľadávanie a spracovanie queries.
-            </aside>
         </section>
 
         <section>
@@ -246,13 +202,6 @@
                         <li><strong>Summary Index:</strong> rýchle vyhľadávanie v sumároch dokumentov</li>
                     </ul>
                 </div>
-            <aside class="notes">
-                1. Query Transformation: pri query transformation vyuzivme llm na preformulovanie alebo rozloženie používateľskej query tak, aby lepšie zodpovedala našim datam. Ak je query komplexna, model ju môže rozdeliť na niekoľko menších sub-queries. Napríklad, ak sa spýtame ci viac kg drepuje Viktor alebo Marek“, model to moze rozdeliť na dve jednoduchšie queries ako: „Koľko kg drepuje Viktor?“ a „Koľko kg drepuje Marek?“. Tieto sub-queries sa spracujú samostatne a výsledky sa nakoniec spoja, čím získa používateľ celistvú odpoveď.<br>
-                2. Query Routing: Ak napríklad máme dáta o rôznych mestách, pomocou embeddingu query vieme identifikovat najviac relevantne zdroje, cim eliminujeme potrebu prehľadávať všetky databázy a zameria sa len na tie relevantné.<br>
-                3. Hybrid Retrieval: Vieme spojit semanticke vyhliadavanie pomocou vektorov s vyhliadavanim pomocou klucovych slov, ktore vieme my dopredu zadefinovat alebo ich ziskat pomocou spracovania query LLMkom<br>
-                4. Chunk Re-ranking: Chunky, ktore posielame LLM vieme zoradit tak, aby najviac relevantne boli na zaciatku a konci user prompty, kedze viacere studie uz ukazali, ze llmko sa najviac pozera na zaciatok a koniec spravy.<br>
-                5. Summary Index: umožňuje nám najprv prehľadať sumáre dokumentov, aby sme našli tie najrelevantnejšie, a až potom podrobne prehľadať samotné chunky. Týmto dvojstupňovým prístupom vieme rýchlo zúžiť rozsah vyhľadávania na najrelevantnejšie časti a zabezpečiť presnejšie a rýchlejšie odpovede.
-            </aside>
         </section>
 
         <section>
@@ -260,13 +209,8 @@
             <ul>
                 <li><strong>Vymedzenie dát pre odpovede:</strong> model odpovedá iba na základe poskytnutých kontextových údajov, s rozlíšením medzi poskytnutými chunkmi a jeho vlastnými poznatkami</li>
                 <li><strong>Špecifikácia vstupu a výstupu:</strong> presné definovanie, ako model spracuje dotaz, vrátane štruktúry user query a relevantných chunkov, aby nedošlo k nesprávnemu vyloženiu query</li>
-                <li><strong>Štandardizovaný výstup:</strong> ak pracujete so štruktúrovanými výstupmi (napr. JSON schema), je dôležité presne nastaviť formát očakávaného výstupu pre konzistentné výsledky</li>
+                <li><strong>Štandardizovaný výstup:</strong> je dôležité presne nastaviť formát očakávaného výstupu pre konzistentné výsledky</li>
             </ul>
-            <aside class="notes">
-                Na tejto časti sa zameriame na nastavenie systému tak, aby poskytoval čo najpresnejšie a najspoľahlivejšie odpovede. V RAG systémoch, kde sa model opiera o externé zdroje, je dôležité, aby odpovede boli ukotvené vo vloženom kontexte a model sa vyhýbal takzvaným „halucináciám“ – teda odpovediam, ktoré nie sú podložené reálnymi dátami. Existuje niekoľko prístupov, ktoré nám môžu pomôcť dosiahnuť túto konzistenciu:<br>
-                1. Vymedzenie dat pouzitych na generovanie odpovede: aby sme predosli halucinovaniu, môžeme v system prompte jednoznačne určiť, aby model odpovedal len na základe poskytnutých kontextových údajov. Ak je v poriadku, aby odpovedal aj na zaklade toho co uz je nauceny, tak by stalo za to specifikovat aby v odpovedi diferencoval medzi castami odpovede zalozenymi na poskytnutych chunkoch a na castiach o ktorych mal on vlastne informacie. Vieme takto lepsie prist na mozne halucinovanie/chyby v odpovediach<br>
-                2. Uvedenie špecifikácií pre prichádzajúci vstup a očakávaný výstup: Je dôležité presne definovať, ako má model interpretovať vstupné údaje používateľa a aký štýl odpovede sa očakáva. Co sa tyka vstupu tak sa oplati spomenut ako budete strukturovat user query, kde sa bude nachadzat user query a kde budu relevantne chunky, aby nedoslo k zlemu vylozeniu user query. Ak dalej spracovavate jeho vystup, tak bez presnych specifikacie bude stale aspon trocha rozlicny(bohuzial sa to niekedy deje aj napriek presnym specifikaciam ako je napriklad json schema odpovede).<br>
-            </aside>
         </section>
 
         <section>
@@ -275,15 +219,9 @@
                 <li><strong>Praktické použitia:</strong> ideálne pre prostredia, kde sa často vyhľadávajú informácie v dokumentoch – efektívne pri statických dátach, kde môžu byť vopred pripravené prompty</li>
                 <li><strong>Obmedzenia úložiska:</strong> veľkosť jedného 1536 dimenzionalneho vektoru je približne 6 KB, čo zvyšuje náročnosť na úložisko</li>
                 <li><strong>Výber embedding modelu:</strong> správny embedding model je kľúčový, keďže modely sa špecializujú na rôzne prípady použitia</li>
-                <li><strong>Prompt engineering:</strong> efektivitu môže znížiť nedostatočná znalosť používateľa v správnom formulovaní dotazov, čo si vyžaduje nejaké školenie v oblasti prompt engineeringu</li>
+                <li><strong>Prompt engineering:</strong> efektivitu môže znížiť nedostatočná znalosť používateľa v správnom formulovaní dotazov</li>
             </ul>
-            <aside class="notes">
-                Na zaver by sme si povedali o nejakych realnych use casoch a limitaciach. Co sa tyka pouziti tak taketo systemy su vhodne a setria vela casu na miestach kde casto musite prehliadavat dokumenty a hladat v nich informacie.<br>
-                O to lepsie je, ked su tie data staticke, takze si viete dopredu predpripravit nejake prompty/use casy a nemusite sa spoliehat na pouzivatela, ze vie ako sa ma spravne pytat.<br>
-                Problemom pri takychto systemoch je, ze su velmi narocne na ulozisko, kedze velkost jednoho vectoru s dimenzionalitou 1536, je okolo 6 kilobytov.<br>
-                Dalsim problemom je vyber spravneho embedding modelu pre vas use case. Embedding modely su casto dobre na specificke pouzitia a velmi ovplyvnuju relevantnost vybratych chunkov z databazy.<br>
-                Najvacsie porovnanie tychto modelov robi momentalne hugging face. Ak uz mate toto vsetko pokryte tak efektivnost RAGu sa vie velmi znizit aj na strane usera, ktory sa nemusi vediet spravne pytat, takze tam je potrebne skolenie na nejaky prompt engineering.            </aside>
-        </section>
+          </section>
 
         <section>
             <h2 class="t-yellow">Ďakujem za pozornosť</h2>
